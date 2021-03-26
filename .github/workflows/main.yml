@@ -20,6 +20,8 @@ jobs:
     - name: Install Dependencies
       run: npm install
     - name: Build
+      env:
+        NODE_OPTIONS: '--max_old_space_size=4096'
       run: npm run build 
     - name: Create temp Directory
       uses: appleboy/ssh-action@master
@@ -35,11 +37,11 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
         source: "dist"
-        target: "~/frontends/ide.codingblocks.com"
+        target: "~/frontends/ide.codingblocks.com/temp"
     - name: Replace New Build
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
-        script: ln -sfn ~/frontends/ide.codingblocks.com/dist ~/frontends/ide.codingblocks.com/current && rm -rf ~/frontends/ide.codingblocks.com/live/* && cp -rf ~/frontends/ide.codingblocks.com/dist/* ~/frontends/ide.codingblocks.com/live/ && ln -sfn ~/frontends/ide.codingblocks.com/live ~/frontends/ide.codingblocks.com/current && rm -rf ~/frontends/ide.codingblocks.com/dist
+        script: ln -sfn ~/frontends/ide.codingblocks.com/temp ~/frontends/ide.codingblocks.com/current && rm -rf ~/frontends/ide.codingblocks.com/live/* && cp -rf ~/frontends/ide.codingblocks.com/temp/* ~/frontends/ide.codingblocks.com/live/ && ln -sfn ~/frontends/ide.codingblocks.com/live ~/frontends/ide.codingblocks.com/current && rm -rf ~/frontends/ide.codingblocks.com/temp
